@@ -1,0 +1,5 @@
+Statements.txt
+--------------
+This was my first time making a program that asked for progressive user input in C++, but I found the underlying concepts to be identical.
+For example, I liked the specific implementation of the instructions on using a nested loop, where the outer loop obtains the character's 
+name and the inner loop records the dragon names. Overall, I found this to be a challenging and fun assignment.

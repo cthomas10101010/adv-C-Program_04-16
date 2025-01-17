@@ -1,0 +1,4 @@
+In this program, I learned how to separate class declarations and implementations 
+into .h and .cpp files. I also practiced using vectors, handling exceptions with try/catch, 
+and creating static data members. Working with time functions and passing a string by reference 
+helped me reinforce concepts from Chapters 7, 8, and 9.

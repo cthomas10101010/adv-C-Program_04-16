@@ -1,0 +1,40 @@
+Developer’s Technical Experiences - Program 02
+----------------------------------------------
+1) Pointers and References:
+   I practiced using reference parameters in "calculateDiscount()" to return
+   the discounted price. This helped avoid using a separate global or static
+   variable. In "determineLarger()", I returned the larger integer using 
+   a pointer parameter, which reinforced how pointers can be used for output.
+
+2) Array Comparisons and Sorting:
+   I compared two built-in string arrays in "compareArrays()" by checking
+   each index for equality. For sorting, I implemented a simple bubble sort
+   in "sortArrays.cpp"—first for a built-in array, then for a std::array.
+
+3) Demo of Pointer Techniques:
+   The "demoPtrTechniques()" function was fun to implement. I demonstrated
+   four ways of passing pointers:
+      - passByPointer(int* ptr)
+      - passPointerToConst(const int* ptr)
+      - passConstPointer(int* const ptr)
+      - passConstPointerToConst(const int* const ptr)
+
+   This clarified const correctness and pointer usage.
+
+4) Insights:
+   - Ensuring each function only does one job makes the code more organized
+     and easier to maintain.
+   - I used simple bubble sort for both arrays so I wouldn't rely on standard
+     library sort functions not yet covered in detail.
+   - Splitting the project into multiple files (.h / .cpp) keeps each function
+     self-contained and follows standard modular design.
+
+5) Challenges:
+   - Remembering to pass the correct parameters to the pointer-based 
+     and reference-based functions.
+   - Keeping track of array sizes, especially mixing built-in arrays 
+     and std::array objects.
+
+6) Conclusion:
+   Overall, this assignment strengthened my understanding of pointers,
+   reference parameters, built-in arrays, and fundamental sorting techniques.

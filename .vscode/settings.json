@@ -71,6 +71,7 @@
         "xtree": "cpp",
         "functional": "cpp",
         "numeric": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "bitset": "cpp"
     }
 }
