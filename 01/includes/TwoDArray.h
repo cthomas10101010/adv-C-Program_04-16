@@ -1,129 +1,96 @@
 #ifndef TWODARRAY_H
 #define TWODARRAY_H
 
+#include <stdexcept> // Allowed in Chapter 7 (exceptions)
 #include <iostream>
-#include <stdexcept>  // For exception handling
 
-/**
- * @brief A generic 2D array template class that can store items of type T.
- */
 template <typename T>
 class TwoDArray
 {
 private:
-    T** arrayData;         // Pointer to a pointer – 2D dynamic array
-    int maxRows;           // Maximum number of rows allocated
-    int* maxColsPerRow;    // Tracks the number of columns allocated for each row
+    T** dataPtr;
+    int maxRows;
+    int* maxCols;
 
 public:
-    /**
-     * @brief Constructor: allocates memory for a 2D array with a given maximum number of rows.
-     * @param rows The maximum number of rows (e.g., characters) you plan to store.
-     */
+    // Constructor
     TwoDArray(int rows)
     {
         maxRows = rows;
-        arrayData = new T*[maxRows];
-        maxColsPerRow = new int[maxRows];
-
-        // Initialize each row pointer to nullptr and column count to 0.
+        dataPtr = new T*[maxRows];
+        maxCols = new int[maxRows];
+        // Initialize each row to nullptr, col count to 0
         for (int i = 0; i < maxRows; ++i)
         {
-            arrayData[i] = nullptr;
-            maxColsPerRow[i] = 0;
+            dataPtr[i] = nullptr;
+            maxCols[i] = 0;
         }
     }
 
-    /**
-     * @brief Destructor: releases allocated memory.
-     */
+    // Destructor
     ~TwoDArray()
     {
-        // Deallocate memory for each row.
         for (int i = 0; i < maxRows; ++i)
         {
-            delete[] arrayData[i];
+            delete[] dataPtr[i];
         }
-        // Deallocate the array of pointers and the column count array.
-        delete[] arrayData;
-        delete[] maxColsPerRow;
+        delete[] dataPtr;
+        delete[] maxCols;
     }
 
-    /**
-     * @brief Allocates the columns for a specific row.
-     * @param row The row index to allocate.
-     * @param cols The number of columns to allocate for that row.
-     */
-    void allocateRow(int row, int cols)
+    // Allocate a row's columns
+    void allocateRow(int rowIndex, int cols)
     {
-        if (row < 0 || row >= maxRows)
+        if (rowIndex < 0 || rowIndex >= maxRows)
             throw std::out_of_range("Row index out of range.");
 
-        // If the row already has allocated memory, delete it before re-allocating.
-        delete[] arrayData[row];
+        // Deallocate if already allocated
+        delete[] dataPtr[rowIndex];
 
-        arrayData[row] = new T[cols];
+        dataPtr[rowIndex] = new T[cols];
+        maxCols[rowIndex] = cols;
 
-        // Initialize each element to the default value.
+        // Initialize each entry
         for (int i = 0; i < cols; ++i)
         {
-            arrayData[row][i] = T();  
+            dataPtr[rowIndex][i] = T();
         }
-
-        maxColsPerRow[row] = cols;
     }
 
-    /**
-     * @brief Stores an element in the 2D array.
-     * @param row The row index.
-     * @param col The column index.
-     * @param value The value to store.
-     */
+    // Store an element
     void setElement(int row, int col, const T& value)
     {
         if (row < 0 || row >= maxRows)
             throw std::out_of_range("Row index out of range.");
-        if (col < 0 || col >= maxColsPerRow[row])
+        if (col < 0 || col >= maxCols[row])
             throw std::out_of_range("Column index out of range.");
 
-        arrayData[row][col] = value;
+        dataPtr[row][col] = value;
     }
 
-    /**
-     * @brief Retrieves an element from the 2D array.
-     * @param row The row index.
-     * @param col The column index.
-     * @return The requested element.
-     */
+    // Retrieve an element
     T getElement(int row, int col) const
     {
         if (row < 0 || row >= maxRows)
             throw std::out_of_range("Row index out of range.");
-        if (col < 0 || col >= maxColsPerRow[row])
+        if (col < 0 || col >= maxCols[row])
             throw std::out_of_range("Column index out of range.");
 
-        return arrayData[row][col];
+        return dataPtr[row][col];
     }
-    
-    /**
-     * @brief Gets the maximum number of rows allocated.
-     * @return The maximum number of rows.
-     */
+
+    // Return number of rows
     int getMaxRows() const
     {
         return maxRows;
     }
-    
-    /**
-     * @brief Gets the number of columns allocated for a specific row.
-     * @param row The row index.
-     * @return The number of columns allocated for that row.
-     */
+
+    // Return number of columns for a given row
     int getColsForRow(int row) const
     {
         if (row < 0 || row >= maxRows)
             throw std::out_of_range("Row index out of range.");
-        return maxColsPerRow[row];
+        return maxCols[row];
     }
 };
 

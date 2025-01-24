@@ -6,15 +6,20 @@
 
 using namespace std;
 
+// We'll fix maximum number of possible characters to store
+static const int MAX_CHARACTERS = 50;
+
 void runPart1()
 {
     cout << "-------------------------------" << endl;
     cout << "         PART 1                " << endl;
-    cout << "  (Characters & Dragons)       " << endl;
+    cout << " (Characters & Dragons) - 2D   " << endl;
+    cout << "  Class Template Array         " << endl;
     cout << "-------------------------------" << endl;
 
-    const int MAX_CHARACTERS = 50;
-    TwoDArray<string> characterDragonArray(MAX_CHARACTERS);
+    // Create 2D array of strings (row = each character, columns = their dragons)
+    TwoDArray<string> charDragonArray(MAX_CHARACTERS);
+
     int currentRow = 0;
 
     while (true)
@@ -22,7 +27,7 @@ void runPart1()
         cout << "Would you like to enter a character? (y/n): ";
         char choice;
         cin >> choice;
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         if (choice == 'n' || choice == 'N')
         {
@@ -30,39 +35,41 @@ void runPart1()
         }
         else if (choice == 'y' || choice == 'Y')
         {
-            cout << "Enter the character name: ";
-            string characterName;
-            getline(cin, characterName);
-
-            cout << "How many dragons would you like to enter for " << characterName << "? ";
-            int numDragons;
-            cin >> numDragons;
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (numDragons < 0)
-            {
-                cout << "Number of dragons cannot be negative. Setting to 0." << endl;
-                numDragons = 0;
-            }
-
-            // Allocate columns: column 0 for the character name and subsequent columns for each dragon name.
-            characterDragonArray.allocateRow(currentRow, numDragons + 1);
-            characterDragonArray.setElement(currentRow, 0, characterName);
-
-            // Use nested loop: inner loop records dragon names.
-            for (int i = 0; i < numDragons; ++i)
-            {
-                cout << "Enter the name of dragon " << (i + 1) << ": ";
-                string dragonName;
-                getline(cin, dragonName);
-                characterDragonArray.setElement(currentRow, i + 1, dragonName);
-            }
-
-            currentRow++;
             if (currentRow >= MAX_CHARACTERS)
             {
                 cout << "Maximum character limit reached!" << endl;
                 break;
             }
+
+            cout << "Enter the character name: ";
+            string characterName;
+            getline(cin, characterName);
+
+            cout << "How many dragons for " << characterName << "? ";
+            int numDragons;
+            cin >> numDragons;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            if (numDragons < 0)
+            {
+                cout << "Number of dragons cannot be negative. Defaulting to 0." << endl;
+                numDragons = 0;
+            }
+
+            // Allocate that many columns in the row
+            charDragonArray.allocateRow(currentRow, numDragons + 1);
+            // Store the character name in column 0
+            charDragonArray.setElement(currentRow, 0, characterName);
+
+            for (int i = 1; i <= numDragons; ++i)
+            {
+                cout << "Enter name of dragon " << i << ": ";
+                string dragonName;
+                getline(cin, dragonName);
+                charDragonArray.setElement(currentRow, i, dragonName);
+            }
+
+            currentRow++;
         }
         else
         {
@@ -70,20 +77,22 @@ void runPart1()
         }
     }
 
-    // Output the data entered by the user.
+    // Display results
     cout << "\nYou entered the following characters and their dragons:\n" << endl;
     for (int row = 0; row < currentRow; ++row)
     {
-        string charName = characterDragonArray.getElement(row, 0);
-        int cols = characterDragonArray.getColsForRow(row);
-
-        cout << "Character: " << charName << endl;
-        cout << "Dragons:";
-        // Starting at col 1 since col 0 holds the character name.
-        for (int col = 1; col < cols; ++col)
+        int cols = charDragonArray.getColsForRow(row);
+        if (cols == 0) continue; // no data
+        cout << "Character: " << charDragonArray.getElement(row, 0) << endl;
+        if (cols > 1)
         {
-            cout << " " << characterDragonArray.getElement(row, col);
+            cout << "Dragons:";
+            for (int col = 1; col < cols; ++col)
+            {
+                cout << " " << charDragonArray.getElement(row, col);
+            }
+            cout << endl;
         }
-        cout << "\n" << endl;
+        cout << endl;
     }
 }
