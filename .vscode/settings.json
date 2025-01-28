@@ -72,6 +72,13 @@
         "functional": "cpp",
         "numeric": "cpp",
         "random": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "*.tcc": "cpp",
+        "cwctype": "cpp",
+        "memory_resource": "cpp",
+        "string_view": "cpp",
+        "numbers": "cpp",
+        "text_encoding": "cpp",
+        "variant": "cpp"
     }
 }

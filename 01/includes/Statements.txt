@@ -1,5 +1,0 @@
-I was overwhelmed by the complexity of this assignment at first. I began to read
-the textbook up to chapter 7, did some googling, and more research with AI.
-Then I doubled back and read the textbook some more to make sure that my code
-only used what is taught from chapter 1 up to chapter 7. I did additional testing
-and am confident I now have completed all assignment specifications.
