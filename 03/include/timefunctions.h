@@ -3,7 +3,6 @@
 
 #include <string>
 
-// Provides the date/time via reference parameter(s)
-void getTime(std::string &dateTime);
+void getTime(std::string& timeStr);
 
 #endif

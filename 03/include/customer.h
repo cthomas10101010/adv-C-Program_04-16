@@ -9,33 +9,26 @@ private:
     int custID;
     std::string name;
     std::string address;
-    std::vector<int> orderNums;         // vector of order numbers
-    std::string customerCreationTime;   // date and time
-    static int customerCount;           // shared among all Customer objects
+    std::vector<int> orderNums;
+    std::string customerCreationTime;
+    static int customerCount;
 
 public:
-    // Constructors
-    Customer();
-    Customer(int id, const std::string &nm, const std::string &addr, const std::string &cTime);
-
-    // Setters
-    void setCustID(int id);
-    void setName(const std::string &nm);
-    void setAddress(const std::string &addr);
-    void setCustomerCreationTime(const std::string &time);
-
-    // Adds an order number to this customer's vector of orders
-    void addOrderNum(int orderNum);
-
+    Customer(int id, const std::string& n, const std::string& addr, const std::string& time);
+    
     // Getters
-    int getCustID() const;
-    std::string getName() const;
-    std::string getAddress() const;
-    std::string getCustomerCreationTime() const;
-    const std::vector<int>& getOrderNums() const;
-
-    // Static function to get how many Customer objects have been created
-    static int getCustomerCount();
+    int getCustID() const { return custID; }
+    std::string getName() const { return name; }
+    std::string getAddress() const { return address; }
+    std::vector<int> getOrderNums() const { return orderNums; }
+    std::string getCustomerCreationTime() const { return customerCreationTime; }
+    static int getCustomerCount() { return customerCount; }
+    
+    // Setters
+    void setCustID(int id) { custID = id; }
+    void setName(const std::string& n) { name = n; }
+    void setAddress(const std::string& addr) { address = addr; }
+    void addOrderNum(int orderNum) { orderNums.push_back(orderNum); }
 };
 
 #endif
