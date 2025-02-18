@@ -5,7 +5,7 @@
 
 class TwoDayPackage : public Package {
 private:
-    double twoDayFee;
+    double twoDayFee;  // additional flat fee for two-day shipping
 public:
     TwoDayPackage(const std::string& sName = "", const std::string& sAddr = "",
                   const std::string& sCity = "", const std::string& sSt = "",
@@ -17,6 +17,7 @@ public:
     void setTwoDayFee(double fee);
     double getTwoDayFee() const { return twoDayFee; }
 
+    // Override calculateCost() to include the twoDayFee
     virtual double calculateCost() const override;
 };
 

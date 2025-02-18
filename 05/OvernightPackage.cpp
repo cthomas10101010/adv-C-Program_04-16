@@ -7,14 +7,15 @@ OvernightPackage::OvernightPackage(const std::string& sName, const std::string& 
                                    const std::string& rSt, const std::string& rZip,
                                    double w, double cost, double rate)
     : Package(sName, sAddr, sCity, sSt, sZip,
-              rName, rAddr, rCity, rSt, rZip, w, cost),
-      overnightRate(rate) {}
+              rName, rAddr, rCity, rSt, rZip, w, cost) {
+    setOvernightRate(rate);
+}
 
 void OvernightPackage::setOvernightRate(double rate) {
-    overnightRate = (rate > 0) ? rate : 0.0;
+    overnightRate = (rate > 0.0) ? rate : 0.0; 
 }
 
 double OvernightPackage::calculateCost() const {
-    // Additional cost per ounce
+    // Base cost + extra per ounce
     return Package::calculateCost() + (getWeight() * overnightRate);
 }

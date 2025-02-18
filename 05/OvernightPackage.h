@@ -5,7 +5,8 @@
 
 class OvernightPackage : public Package {
 private:
-    double overnightRate;
+    double overnightRate; // Additional cost per ounce
+
 public:
     OvernightPackage(const std::string& sName = "", const std::string& sAddr = "",
                      const std::string& sCity = "", const std::string& sSt = "",
