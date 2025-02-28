@@ -1,7 +1,7 @@
-// filepath: /c:/Users/johnj/adv-C-Program_04-16/06/main.cpp
 #include <iostream>
 #include <vector>  // for std::vector
 #include <limits>
+#include <iomanip> // for std::setprecision
 #include "Package.h"
 #include "TwoDayPackage.h"
 #include "OvernightPackage.h"
@@ -12,75 +12,162 @@ int main() {
     // Create a vector of Package pointers
     std::vector<Package*> packages;
 
-    // Prompt user for base Package info
-    std::cout << "Enter Base Package info:\n";
-    std::cout << "Sender (Name Address City State Zip): ";
-    std::string sName, sAddr, sCity, sState, sZip;
-    std::cin >> sName >> sAddr >> sCity >> sState >> sZip;
-
-    std::cout << "Receiver (Name Address City State Zip): ";
-    std::string rName, rAddr, rCity, rState, rZip;
-    std::cin >> rName >> rAddr >> rCity >> rState >> rZip;
-
-    std::cout << "Weight and costPerOunce (e.g. 5 0.5): ";
-    double weight, costPerOunce;
-    std::cin >> weight >> costPerOunce;
-
-    // Dynamically create a base Package
-    Package* basePkg = new Package(sName, sAddr, sCity, sState, sZip,
-                                   rName, rAddr, rCity, rState, rZip,
-                                   weight, costPerOunce);
-    packages.push_back(basePkg);
-
-    // Prompt user for TwoDayPackage info
-    std::cout << "\nEnter TwoDayPackage additional fee: ";
-    double twoDayFee;
-    std::cin >> twoDayFee;
-    // Create a TwoDayPackage using the same addresses
-    Package* twoDay = new TwoDayPackage(sName, sAddr, sCity, sState, sZip,
-                                        rName, rAddr, rCity, rState, rZip,
-                                        weight, costPerOunce, twoDayFee);
-    packages.push_back(twoDay);
-
-    // Prompt user for OvernightPackage info
-    std::cout << "\nEnter OvernightPackage rate (e.g. 0.75): ";
-    double overnightRate;
-    std::cin >> overnightRate;
-    // Create an OvernightPackage using the same addresses
-    Package* overnight = new OvernightPackage(sName, sAddr, sCity, sState, sZip,
-                                              rName, rAddr, rCity, rState, rZip,
-                                              weight, costPerOunce, overnightRate);
-    packages.push_back(overnight);
-
-    // Now iterate through the vector polymorphically
-    double totalCost = 0.0;
-    std::cout << "\nPackage Details and Costs:\n";
-    for (Package* pkg : packages) {
-        std::cout << "Sender:   " << pkg->getSenderName()   << ", "
-                  << pkg->getSenderAddress() << ", "
-                  << pkg->getSenderCity()    << ", "
-                  << pkg->getSenderState()   << ", "
-                  << pkg->getSenderZip()     << "\n";
-
-        std::cout << "Receiver: " << pkg->getReceiverName() << ", "
-                  << pkg->getReceiverAddress() << ", "
-                  << pkg->getReceiverCity()    << ", "
-                  << pkg->getReceiverState()   << ", "
-                  << pkg->getReceiverZip()     << "\n";
-
-        double cost = pkg->calculateCost();
-        std::cout << "Cost: $" << cost << "\n\n";
-        totalCost += cost;
+    try {
+        // Get common sender info
+        std::cout << "Enter Sender Information (this will be used for all packages):\n";
+        std::cout << "Name: ";
+        std::string sName;
+        std::cin >> sName;
+        
+        std::cout << "Address: ";
+        std::string sAddr;
+        std::cin >> sAddr;
+        
+        std::cout << "City: ";
+        std::string sCity;
+        std::cin >> sCity;
+        
+        std::cout << "State: ";
+        std::string sState;
+        std::cin >> sState;
+        
+        std::cout << "Zip: ";
+        std::string sZip;
+        std::cin >> sZip;
+        
+        // Process standard package
+        std::cout << "\n--- STANDARD PACKAGE ---\n";
+        std::cout << "Enter Receiver Information:\n";
+        
+        std::cout << "Name: ";
+        std::string rName;
+        std::cin >> rName;
+        
+        std::cout << "Address: ";
+        std::string rAddr;
+        std::cin >> rAddr;
+        
+        std::cout << "City: ";
+        std::string rCity;
+        std::cin >> rCity;
+        
+        std::cout << "State: ";
+        std::string rState;
+        std::cin >> rState;
+        
+        std::cout << "Zip: ";
+        std::string rZip;
+        std::cin >> rZip;
+        
+        std::cout << "Weight (oz): ";
+        double weight;
+        std::cin >> weight;
+        
+        std::cout << "Cost per ounce ($): ";
+        double costPerOunce;
+        std::cin >> costPerOunce;
+        
+        // Create standard package and add to vector
+        packages.push_back(new Package(sName, sAddr, sCity, sState, sZip, 
+                                      rName, rAddr, rCity, rState, rZip,
+                                      weight, costPerOunce));
+                                      
+        // Process Two-Day Package
+        std::cout << "\n--- TWO-DAY PACKAGE ---\n";
+        std::cout << "Enter Receiver Information:\n";
+        
+        std::cout << "Name: ";
+        std::cin >> rName;
+        
+        std::cout << "Address: ";
+        std::cin >> rAddr;
+        
+        std::cout << "City: ";
+        std::cin >> rCity;
+        
+        std::cout << "State: ";
+        std::cin >> rState;
+        
+        std::cout << "Zip: ";
+        std::cin >> rZip;
+        
+        std::cout << "Weight (oz): ";
+        std::cin >> weight;
+        
+        std::cout << "Cost per ounce ($): ";
+        std::cin >> costPerOunce;
+        
+        std::cout << "Flat fee for two-day delivery ($): ";
+        double twoDayFee;
+        std::cin >> twoDayFee;
+        
+        // Create two-day package and add to vector
+        packages.push_back(new TwoDayPackage(sName, sAddr, sCity, sState, sZip,
+                                            rName, rAddr, rCity, rState, rZip,
+                                            weight, costPerOunce, twoDayFee));
+                                            
+        // Process Overnight Package
+        std::cout << "\n--- OVERNIGHT PACKAGE ---\n";
+        std::cout << "Enter Receiver Information:\n";
+        
+        std::cout << "Name: ";
+        std::cin >> rName;
+        
+        std::cout << "Address: ";
+        std::cin >> rAddr;
+        
+        std::cout << "City: ";
+        std::cin >> rCity;
+        
+        std::cout << "State: ";
+        std::cin >> rState;
+        
+        std::cout << "Zip: ";
+        std::cin >> rZip;
+        
+        std::cout << "Weight (oz): ";
+        std::cin >> weight;
+        
+        std::cout << "Cost per ounce ($): ";
+        std::cin >> costPerOunce;
+        
+        std::cout << "Additional cost per ounce for overnight delivery ($): ";
+        double overnightRate;
+        std::cin >> overnightRate;
+        
+        // Create overnight package and add to vector
+        packages.push_back(new OvernightPackage(sName, sAddr, sCity, sState, sZip,
+                                               rName, rAddr, rCity, rState, rZip,
+                                               weight, costPerOunce, overnightRate));
+                                               
+        // Process packages polymorphically
+        std::cout << "\n\n--- PROCESSING PACKAGES POLYMORPHICALLY ---\n\n";
+        double totalCost = 0.0;
+        
+        // Iterate through packages vector to process each package polymorphically
+        for (size_t i = 0; i < packages.size(); ++i) {
+            // Display package information
+            packages[i]->displayInfo();
+            
+            // Add this package's cost to the total
+            totalCost += packages[i]->calculateCost();
+            
+            std::cout << std::endl;
+        }
+        
+        // Display total cost of all packages
+        std::cout << std::fixed << std::setprecision(2);
+        std::cout << "Total cost of all packages: $" << totalCost << std::endl;
+        
+        // Clean up dynamically allocated memory
+        for (size_t i = 0; i < packages.size(); ++i) {
+            delete packages[i];
+        }
+        
     }
-
-    std::cout << "Total Cost of All Packages: $" << totalCost << "\n";
-
-    // Clean up
-    for (Package* pkg : packages) {
-        delete pkg;
+    catch (std::invalid_argument& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
-    packages.clear();
-
-    std::cout << "\nEnd of Program 06\n";
+    
     return 0;
 }

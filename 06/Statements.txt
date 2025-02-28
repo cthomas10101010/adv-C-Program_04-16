@@ -1,0 +1,5 @@
+ I began by reading the textbook up to Chapter 12, doing some Googling, and conducting further research
+with AI. Then, I doubled back and reread the textbook to ensure that my code only
+used concepts taught from Chapter 1 to Chapter 11. I performed additional testing
+and am confident that I have completed all the assignment specifications. I learned
+the most by creating detailed code with AI after thoroughly reviewing the textbook.

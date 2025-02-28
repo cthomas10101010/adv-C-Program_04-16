@@ -5,23 +5,25 @@
 
 class OvernightPackage : public Package {
 private:
-    double overnightRate; // additional cost per ounce
+    double overnightRate; // additional cost per ounce for overnight shipping
 
 public:
-    OvernightPackage(const std::string &sName = "", const std::string &sAddr = "",
-                     const std::string &sCity = "", const std::string &sSt = "",
-                     const std::string &sZip = "", const std::string &rName = "",
-                     const std::string &rAddr = "", const std::string &rCity = "",
-                     const std::string &rSt = "", const std::string &rZip = "",
-                     double w = 0.0, double cost = 0.0, double rate = 0.0);
-
+    // Constructor
+    OvernightPackage(const std::string& sName, const std::string& sAddress, 
+                    const std::string& sCity, const std::string& sState, const std::string& sZip,
+                    const std::string& rName, const std::string& rAddress, 
+                    const std::string& rCity, const std::string& rState, const std::string& rZip,
+                    double wgt, double cost, double oRate);
+                 
+    // Setter and getter for overnightRate
     void setOvernightRate(double rate);
-    double getOvernightRate() const { return overnightRate; }
-
-    // Override base-class function
+    double getOvernightRate() const;
+    
+    // Override calculateCost() to include overnightRate
     virtual double calculateCost() const override;
-
-    virtual ~OvernightPackage() {}
+    
+    // Override displayInfo to show overnight specific info
+    virtual void displayInfo() const override;
 };
 
 #endif
