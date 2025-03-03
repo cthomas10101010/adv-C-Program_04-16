@@ -1,71 +1,91 @@
 #include <iostream>
-#include <vector>  // for std::vector
+#include <vector>
 #include <limits>
-#include <iomanip> // for std::setprecision
+#include <iomanip>
+#include <string>
 #include "Package.h"
 #include "TwoDayPackage.h"
 #include "OvernightPackage.h"
 
+// Helper function to clear input buffer
+void clearInputBuffer() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+// Helper function to get string input that may contain spaces
+std::string getStringInput() {
+    std::string input;
+    std::getline(std::cin, input);
+    return input;
+}
+
+// Helper function to get positive double input
+double getPositiveDouble(const std::string& prompt) {
+    double value;
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> value) {
+            if (value > 0) {
+                clearInputBuffer(); // Clear the buffer after successful input
+                return value;
+            } else {
+                std::cout << "Error: Value must be greater than 0. Please try again.\n";
+            }
+        } else {
+            std::cout << "Error: Invalid input. Please enter a number.\n";
+            std::cin.clear();  // Clear the error flag
+            clearInputBuffer();
+        }
+    }
+}
+
 int main() {
     std::cout << "Program 06: Demonstrating Polymorphism with Packages\n\n";
 
-    // Create a vector of Package pointers
     std::vector<Package*> packages;
 
     try {
         // Get common sender info
         std::cout << "Enter Sender Information (this will be used for all packages):\n";
+        
         std::cout << "Name: ";
-        std::string sName;
-        std::cin >> sName;
+        clearInputBuffer(); // Clear any residual input
+        std::string sName = getStringInput();
         
         std::cout << "Address: ";
-        std::string sAddr;
-        std::cin >> sAddr;
+        std::string sAddr = getStringInput();
         
         std::cout << "City: ";
-        std::string sCity;
-        std::cin >> sCity;
+        std::string sCity = getStringInput();
         
         std::cout << "State: ";
-        std::string sState;
-        std::cin >> sState;
+        std::string sState = getStringInput();
         
         std::cout << "Zip: ";
-        std::string sZip;
-        std::cin >> sZip;
+        std::string sZip = getStringInput();
         
         // Process standard package
         std::cout << "\n--- STANDARD PACKAGE ---\n";
         std::cout << "Enter Receiver Information:\n";
         
         std::cout << "Name: ";
-        std::string rName;
-        std::cin >> rName;
+        std::string rName = getStringInput();
         
         std::cout << "Address: ";
-        std::string rAddr;
-        std::cin >> rAddr;
+        std::string rAddr = getStringInput();
         
         std::cout << "City: ";
-        std::string rCity;
-        std::cin >> rCity;
+        std::string rCity = getStringInput();
         
         std::cout << "State: ";
-        std::string rState;
-        std::cin >> rState;
+        std::string rState = getStringInput();
         
         std::cout << "Zip: ";
-        std::string rZip;
-        std::cin >> rZip;
+        std::string rZip = getStringInput();
         
-        std::cout << "Weight (oz): ";
-        double weight;
-        std::cin >> weight;
-        
-        std::cout << "Cost per ounce ($): ";
-        double costPerOunce;
-        std::cin >> costPerOunce;
+        double weight = getPositiveDouble("Weight (oz): ");
+        double costPerOunce = getPositiveDouble("Cost per ounce ($): ");
         
         // Create standard package and add to vector
         packages.push_back(new Package(sName, sAddr, sCity, sState, sZip, 
@@ -77,29 +97,23 @@ int main() {
         std::cout << "Enter Receiver Information:\n";
         
         std::cout << "Name: ";
-        std::cin >> rName;
+        rName = getStringInput();
         
         std::cout << "Address: ";
-        std::cin >> rAddr;
+        rAddr = getStringInput();
         
         std::cout << "City: ";
-        std::cin >> rCity;
+        rCity = getStringInput();
         
         std::cout << "State: ";
-        std::cin >> rState;
+        rState = getStringInput();
         
         std::cout << "Zip: ";
-        std::cin >> rZip;
+        rZip = getStringInput();
         
-        std::cout << "Weight (oz): ";
-        std::cin >> weight;
-        
-        std::cout << "Cost per ounce ($): ";
-        std::cin >> costPerOunce;
-        
-        std::cout << "Flat fee for two-day delivery ($): ";
-        double twoDayFee;
-        std::cin >> twoDayFee;
+        weight = getPositiveDouble("Weight (oz): ");
+        costPerOunce = getPositiveDouble("Cost per ounce ($): ");
+        double twoDayFee = getPositiveDouble("Flat fee for two-day delivery ($): ");
         
         // Create two-day package and add to vector
         packages.push_back(new TwoDayPackage(sName, sAddr, sCity, sState, sZip,
@@ -111,29 +125,23 @@ int main() {
         std::cout << "Enter Receiver Information:\n";
         
         std::cout << "Name: ";
-        std::cin >> rName;
+        rName = getStringInput();
         
         std::cout << "Address: ";
-        std::cin >> rAddr;
+        rAddr = getStringInput();
         
         std::cout << "City: ";
-        std::cin >> rCity;
+        rCity = getStringInput();
         
         std::cout << "State: ";
-        std::cin >> rState;
+        rState = getStringInput();
         
         std::cout << "Zip: ";
-        std::cin >> rZip;
+        rZip = getStringInput();
         
-        std::cout << "Weight (oz): ";
-        std::cin >> weight;
-        
-        std::cout << "Cost per ounce ($): ";
-        std::cin >> costPerOunce;
-        
-        std::cout << "Additional cost per ounce for overnight delivery ($): ";
-        double overnightRate;
-        std::cin >> overnightRate;
+        weight = getPositiveDouble("Weight (oz): ");
+        costPerOunce = getPositiveDouble("Cost per ounce ($): ");
+        double overnightRate = getPositiveDouble("Additional cost per ounce for overnight delivery ($): ");
         
         // Create overnight package and add to vector
         packages.push_back(new OvernightPackage(sName, sAddr, sCity, sState, sZip,
@@ -163,7 +171,6 @@ int main() {
         for (size_t i = 0; i < packages.size(); ++i) {
             delete packages[i];
         }
-        
     }
     catch (std::invalid_argument& e) {
         std::cerr << "Error: " << e.what() << std::endl;
