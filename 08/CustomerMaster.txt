@@ -1,0 +1,10 @@
+C001%John%Doe%123 Main St%Austin%TX%78701
+C002%Jane%Smith%456 Elm St%Dallas%TX%75201
+C003%Robert%Johnson%789 Oak St%Houston%TX%77001
+C004%Sarah%Williams%101 Pine St%San Antonio%TX%78201
+C005%Michael%Brown%202 Maple St%Austin%TX%78702
+C006%Emily%Davis%303 Cedar St%New York%NY%10001
+C007%David%Miller%404 Birch St%Los Angeles%CA%90001
+C008%Jennifer%Wilson%505 Walnut St%Chicago%IL%60601
+C009%James%Moore%606 Cherry St%Houston%TX%77002
+C010%Lisa%Taylor%707 Spruce St%Dallas%TX%75202

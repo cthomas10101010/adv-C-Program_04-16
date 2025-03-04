@@ -1,9 +1,3 @@
-
-// Demonstration of file operations. 
-// "CustomerMaster.txt" is assumed to contain 100 lines of data with format: 
-// CustomerID%FirstName%LastName%StreetAddress%City%State%ZipCode
-// The user can also add items to "Products.txt" and "Orders.txt" as specified.
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -12,6 +6,69 @@
 #include "Customer.h"
 #include "Product.h"
 #include "Order.h"
+
+void createSampleCustomerMasterFile(const std::string &filename) {
+    // Check if file already exists
+    std::ifstream checkFile(filename.c_str());
+    if (checkFile) {
+        // File exists, no need to create it
+        checkFile.close();
+        return;
+    }
+    
+    // File doesn't exist, create it with sample data
+    std::ofstream outFile(filename.c_str());
+    if (!outFile) {
+        std::cerr << "Unable to create " << filename << "\n";
+        return;
+    }
+    
+    // Create 100 sample customer records (as per requirement #02)
+    // First 10 are detailed, rest are generated with patterns
+    outFile << "C001%John%Doe%123 Main St%Austin%TX%78701\n";
+    outFile << "C002%Jane%Smith%456 Elm St%Dallas%TX%75201\n";
+    outFile << "C003%Robert%Johnson%789 Oak St%Houston%TX%77001\n";
+    outFile << "C004%Sarah%Williams%101 Pine St%San Antonio%TX%78201\n";
+    outFile << "C005%Michael%Brown%202 Maple St%Austin%TX%78702\n";
+    outFile << "C006%Emily%Davis%303 Cedar St%New York%NY%10001\n";
+    outFile << "C007%David%Miller%404 Birch St%Los Angeles%CA%90001\n";
+    outFile << "C008%Jennifer%Wilson%505 Walnut St%Chicago%IL%60601\n";
+    outFile << "C009%James%Moore%606 Cherry St%Houston%TX%77002\n";
+    outFile << "C010%Lisa%Taylor%707 Spruce St%Dallas%TX%75202\n";
+    
+    // Generate 90 more records to meet the 100 record requirement
+    std::string cities[] = {"Austin", "Dallas", "Houston", "San Antonio", "New York", 
+                           "Los Angeles", "Chicago", "Phoenix", "Philadelphia", "San Diego"};
+    std::string states[] = {"TX", "NY", "CA", "IL", "AZ", "PA", "FL", "OH", "MI", "GA"};
+    std::string streets[] = {"Main St", "Elm St", "Oak St", "Pine St", "Maple St"};
+    
+    for (int i = 11; i <= 100; i++) {
+        std::string custId = "C";
+        if (i < 100) {
+            if (i < 10) custId += "00" + std::to_string(i);
+            else custId += "0" + std::to_string(i);
+        } else {
+            custId += std::to_string(i);
+        }
+        
+        int cityIndex = (i % 10);
+        int stateIndex = (i % 10);
+        int streetIndex = (i % 5);
+        int houseNum = (i * 10);
+        std::string zipCode = std::to_string(70000 + i);
+        
+        outFile << custId << "%"
+                << "FirstName" << i << "%"
+                << "LastName" << i << "%"
+                << houseNum << " " << streets[streetIndex] << "%"
+                << cities[cityIndex] << "%"
+                << states[stateIndex] << "%"
+                << zipCode << "\n";
+    }
+    
+    outFile.close();
+    std::cout << "Created sample " << filename << " file with 100 records.\n";
+}
 
 // Prototypes
 void loadCustomers(std::vector<Customer> &customers, const std::string &filename);
@@ -28,7 +85,10 @@ void listOrdersByZipCode(const std::vector<Customer> &customers,
 int main() {
     std::cout << "Program 08: Demonstrating File Operations\n\n";
 
-    // 1) Load the CustomerMaster.txt file into a vector
+    // First create the sample file if needed, then load the customers
+    createSampleCustomerMasterFile("CustomerMaster.txt");
+    
+    // Now load the customer file into a vector
     std::vector<Customer> customers;
     loadCustomers(customers, "CustomerMaster.txt");
 
@@ -110,25 +170,43 @@ int main() {
         }
 
         if (!done) {
-            // Ask if user wants another request
-            std::cout << "\nDo you have another request? (y/n) ";
-            char again;
-            std::cin >> again;
-            if (again != 'y' && again != 'Y') {
+            // Ask if user wants another request with proper input validation
+            char again = 'n';
+            bool validInput = false;
+            
+            while (!validInput) {
+                std::cout << "\nDo you have another request? (y/n) ";
+                std::cin >> again;
+                
+                // Check if input is valid
+                if (std::cin.fail()) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Invalid input. Please enter 'y' or 'n'.\n";
+                } else {
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    again = tolower(again);
+                    if (again == 'y' || again == 'n') {
+                        validInput = true;
+                    } else {
+                        std::cout << "Invalid input. Please enter 'y' or 'n'.\n";
+                    }
+                }
+            }
+            
+            if (again == 'n') {
                 done = true;
             }
         }
     }
 
     // Graceful exit
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.clear();
     std::cout << "\n\n<ENTER> to exit: ";
     std::cin.get();
 
     return 0;
 }
-
 //------------------------------------------------------------------------------
 // Implementation of helper functions
 
@@ -150,67 +228,77 @@ void loadCustomers(std::vector<Customer> &customers, const std::string &filename
 
 void listCities(const std::vector<Customer> &customers) {
     std::vector<std::string> cities;
-    for (const auto &c : customers) {
+    for (size_t i = 0; i < customers.size(); ++i) {
         bool found = false;
-        for (auto &existing : cities) {
-            if (existing == c.getCity()) {
+        for (size_t j = 0; j < cities.size(); ++j) {
+            if (cities[j] == customers[i].getCity()) {
                 found = true;
                 break;
             }
         }
-        if (!found && !c.getCity().empty()) {
-            cities.push_back(c.getCity());
+        if (!found && !customers[i].getCity().empty()) {
+            cities.push_back(customers[i].getCity());
         }
     }
     std::cout << "\nUnique Cities:\n";
-    for (auto &ct : cities) {
-        std::cout << ct << "\n";
+    for (size_t i = 0; i < cities.size(); ++i) {
+        std::cout << cities[i] << "\n";
     }
 }
 
 void listStates(const std::vector<Customer> &customers) {
     std::vector<std::string> states;
-    for (const auto &c : customers) {
+    for (size_t i = 0; i < customers.size(); ++i) {
         bool found = false;
-        for (auto &existing : states) {
-            if (existing == c.getState()) {
+        for (size_t j = 0; j < states.size(); ++j) {
+            if (states[j] == customers[i].getState()) {
                 found = true;
                 break;
             }
         }
-        if (!found && !c.getState().empty()) {
-            states.push_back(c.getState());
+        if (!found && !customers[i].getState().empty()) {
+            states.push_back(customers[i].getState());
         }
     }
     std::cout << "\nUnique States:\n";
-    for (auto &st : states) {
-        std::cout << st << "\n";
+    for (size_t i = 0; i < states.size(); ++i) {
+        std::cout << states[i] << "\n";
     }
 }
 
 void listCustomersInCity(const std::vector<Customer> &customers, const std::string &city) {
     std::cout << "\nCustomers in city: " << city << "\n";
-    for (const auto &c : customers) {
-        if (c.getCity() == city) {
-            std::cout << c.getCustomerID() << ", "
-                      << c.getFirstName() << " " << c.getLastName() << ", "
-                      << c.getStreetAddress() << ", "
-                      << c.getCity() << ", " << c.getState() << ", " << c.getZipCode()
-                      << "\n";
+    bool found = false;
+    for (size_t i = 0; i < customers.size(); ++i) {
+        if (customers[i].getCity() == city) {
+            found = true;
+            std::cout << customers[i].getCustomerID() << ", "
+                      << customers[i].getFirstName() << " " << customers[i].getLastName() << ", "
+                      << customers[i].getStreetAddress() << ", "
+                      << customers[i].getCity() << ", " << customers[i].getState() << ", " 
+                      << customers[i].getZipCode() << "\n";
         }
+    }
+    if (!found) {
+        std::cout << "No customers found in " << city << ".\n";
     }
 }
 
 void listCustomersInState(const std::vector<Customer> &customers, const std::string &state) {
     std::cout << "\nCustomers in state: " << state << "\n";
-    for (const auto &c : customers) {
-        if (c.getState() == state) {
-            std::cout << c.getCustomerID() << ", "
-                      << c.getFirstName() << " " << c.getLastName() << ", "
-                      << c.getStreetAddress() << ", "
-                      << c.getCity() << ", " << c.getState() << ", " << c.getZipCode()
-                      << "\n";
+    bool found = false;
+    for (size_t i = 0; i < customers.size(); ++i) {
+        if (customers[i].getState() == state) {
+            found = true;
+            std::cout << customers[i].getCustomerID() << ", "
+                      << customers[i].getFirstName() << " " << customers[i].getLastName() << ", "
+                      << customers[i].getStreetAddress() << ", "
+                      << customers[i].getCity() << ", " << customers[i].getState() << ", " 
+                      << customers[i].getZipCode() << "\n";
         }
+    }
+    if (!found) {
+        std::cout << "No customers found in " << state << ".\n";
     }
 }
 
@@ -235,8 +323,8 @@ void addProductToFile(const std::string &filename) {
         std::cerr << "Invalid price.\n";
         return;
     }
-    // Append line: ProductID,Description,Price
-    outFile << pid << "," << desc << "," << price << "\n";
+    // Append line with '%' as separator: ProductID%Description%Price
+    outFile << pid << "%" << desc << "%" << price << "\n";
     outFile.close();
     std::cout << "Product added.\n";
 }
@@ -267,8 +355,8 @@ void addOrderToFile(const std::string &filename) {
         std::cerr << "Invalid numeric input.\n";
         return;
     }
-    // Append line: OrderID,CustomerID,ProductID,Quantity,OrderTotal
-    outFile << oid << "," << cid << "," << pid << "," << qty << "," << total << "\n";
+    // Append line with '%' as separator: OrderID%CustomerID%ProductID%Quantity%OrderTotal
+    outFile << oid << "%" << cid << "%" << pid << "%" << qty << "%" << total << "\n";
     outFile.close();
     std::cout << "Order added.\n";
 }
@@ -280,15 +368,15 @@ void listOrdersByCustomerID(const std::string &ordersFile, const std::string &cu
         return;
     }
     std::cout << "\nOrders for CustomerID: " << custID << "\n";
+    bool found = false;
     std::string line;
     while (std::getline(inFile, line)) {
-        // Format: OrderID,CustomerID,ProductID,Quantity,OrderTotal
-        // We'll parse by splitting at ','.
+        // Format: OrderID%CustomerID%ProductID%Quantity%OrderTotal
         std::string fields[5];
         int index = 0;
         size_t start = 0;
         size_t end   = 0;
-        while ((end = line.find(',', start)) != std::string::npos && index < 5) {
+        while ((end = line.find('%', start)) != std::string::npos && index < 5) {
             fields[index++] = line.substr(start, end - start);
             start = end + 1;
         }
@@ -296,11 +384,15 @@ void listOrdersByCustomerID(const std::string &ordersFile, const std::string &cu
             fields[index++] = line.substr(start);
         }
         if (index == 5 && fields[1] == custID) {
+            found = true;
             std::cout << "OrderID: " << fields[0] 
                       << ", ProductID: " << fields[2] 
                       << ", Quantity: " << fields[3] 
-                      << ", OrderTotal: " << fields[4] << "\n";
+                      << ", OrderTotal: $" << fields[4] << "\n";
         }
+    }
+    if (!found) {
+        std::cout << "No orders found for customer ID: " << custID << ".\n";
     }
     inFile.close();
 }
@@ -309,9 +401,9 @@ void listOrdersByZipCode(const std::vector<Customer> &customers,
                          const std::string &ordersFile, const std::string &zip) {
     // First, find all CustomerIDs that match this zip
     std::vector<std::string> matchingCustIDs;
-    for (auto &c : customers) {
-        if (c.getZipCode() == zip) {
-            matchingCustIDs.push_back(c.getCustomerID());
+    for (size_t i = 0; i < customers.size(); ++i) {
+        if (customers[i].getZipCode() == zip) {
+            matchingCustIDs.push_back(customers[i].getCustomerID());
         }
     }
     if (matchingCustIDs.empty()) {
@@ -325,14 +417,15 @@ void listOrdersByZipCode(const std::vector<Customer> &customers,
         return;
     }
     std::cout << "\nOrders for ZipCode: " << zip << "\n";
+    bool found = false;
     std::string line;
     while (std::getline(inFile, line)) {
-        // Format: OrderID,CustomerID,ProductID,Quantity,OrderTotal
+        // Format: OrderID%CustomerID%ProductID%Quantity%OrderTotal
         std::string fields[5];
         int index = 0;
         size_t start = 0;
         size_t end   = 0;
-        while ((end = line.find(',', start)) != std::string::npos && index < 5) {
+        while ((end = line.find('%', start)) != std::string::npos && index < 5) {
             fields[index++] = line.substr(start, end - start);
             start = end + 1;
         }
@@ -341,144 +434,21 @@ void listOrdersByZipCode(const std::vector<Customer> &customers,
         }
         if (index == 5) {
             // fields[1] is CustomerID
-            for (auto &id : matchingCustIDs) {
-                if (fields[1] == id) {
+            for (size_t i = 0; i < matchingCustIDs.size(); ++i) {
+                if (fields[1] == matchingCustIDs[i]) {
+                    found = true;
                     std::cout << "OrderID: " << fields[0] 
                               << ", CustomerID: " << fields[1] 
                               << ", ProductID: " << fields[2] 
                               << ", Quantity: " << fields[3] 
-                              << ", OrderTotal: " << fields[4] << "\n";
+                              << ", OrderTotal: $" << fields[4] << "\n";
                     break; 
                 }
             }
         }
     }
+    if (!found) {
+        std::cout << "No orders found for customers in ZipCode: " << zip << ".\n";
+    }
     inFile.close();
 }
-
-
-
-
-// very important you must only use what is covered in these chapters:: Chapter 7: Class Templates array and vector; Catching Exceptions
-
-// Introduction to class templates array and vector
-// Declaring and using arrays
-// Examples of array usage
-// Range-based for statement
-// Case study: Class GradeBook using an array to store grades
-// Sorting and searching arrays
-// Multidimensional arrays
-// Case study: Class GradeBook using a two-dimensional array
-// Introduction to C++ Standard Library class template vector
-// Wrap-up
-// Chapter 8: Pointers
-
-// Introduction to pointers
-// Pointer variable declarations and initialization
-// Pointer operators
-// Pass-by-reference with pointers
-// Built-in arrays
-// Using const with pointers
-// sizeof operator
-// Pointer expressions and pointer arithmetic
-// Relationship between pointers and built-in arrays
-// Pointer-based strings (optional)
-// Note about smart pointers
-// Wrap-up
-// Chapter 9: Classes: A Deeper Look
-
-// Time class case study: Separating interface from implementation
-// Compilation and linking process
-// Class scope and accessing class members
-// Access functions and utility functions
-// Time class case study: Constructors with default arguments
-// Destructors
-// When constructors and destructors are called
-// Time class case study: A subtle trap—returning a reference or a pointer to a private data member
-// Default memberwise assignment
-// const objects and const member functions
-// Composition: Objects as members of classes
-// friend functions and friend classes
-// Using the this pointer
-// static class members
-// Wrap-up
-// Chapter 10: Operator Overloading; Class string
-
-// Using the overloaded operators of Standard Library class string
-// Fundamentals of operator overloading
-// Overloading binary operators
-// Overloading the binary stream insertion and stream extraction operators
-// Overloading unary operators
-// Overloading the increment and decrement operators
-// Case study: A Date class
-// Dynamic memory management
-// Case study: Array class
-// Operators as member vs. non-member functions
-// Converting between types
-// explicit constructors and conversion operators
-// Overloading the function call operator ()
-// Wrap-up
-// Chapter 11: Object-Oriented Programming: Inheritance
-
-// Base classes and derived classes
-// Relationship between base and derived classes
-// Constructors and destructors in derived classes
-// public, protected, and private inheritance
-// Wrap-up 
-// Chapter 13: Stream Input/Output: A Deeper Look
-
-// Streams
-// Stream output
-// Stream input
-// Unformatted I/O using read, write, and gcount
-// Stream manipulators: A deeper look
-// Stream format states and stream manipulators
-// Stream error states
-// Tying an output stream to an input stream
-// Wrap-up
-
-
-// Chapter 14: File Processing
-
-// Files and streams
-// Creating a sequential file
-// Reading data from a sequential file
-// Updating sequential files
-// Random-access files
-// Creating a random-access file
-// Writing data randomly to a random-access file
-// Reading data sequentially from a random-access file
-// Case study: A transaction-processing program
-// Object serialization
-// Wrap-up
-
-
-// must adheer to sall these strict reuieerments::Requirements
-// Requirements
-//  #01	This program demonstrates file operations. Supply appropriate interaction (input/output) with your user. Again, provide appropriate interaction (input/output) with your user.
-//  #02	Use the file CustomerMaster.txt which contains 100 records of customer data in the following format: CustotmerID, FirstName, LastName, StreetAddress, City, State, ZipCode. All fields are separated by percent signs.
-//  #03	
-// Create the following files to support the operations below:
-
-// Products.txt with the following fields: ProductID, Description, Price
-// Orders.txt with the following format: OrderID, CustomerID, ProductID, Quantity, OrderTotal
-//  #04	
-// Enable your user to perform these minimum iterated operations:
-
-// Add products to the Products.txt file and populate all fields
-// Add orders to the Orders.txt file and populate all fields
-// After each selection, ask your user if s/he has another request to process.
-
-//  #05	
-// Provide the following minimum reporting capabilities as iterated choices:
-
-// List of cities in CustomerMaster.txt
-// List of states in CustomerMaster.txt
-// All customer records in a city
-// All cusomer records in a state
-// All orders associated with a customer by CustomerID
-// All orders associated with a customer by ZipCode
-// After each selection, ask your user if s/he has another request to process.
-
-//  #06	Include statements in a file named Statements.txt explaining your technical experiences with Program 08. Make this authentic (minimum of 2-3 sentences).
-// 6. Complete and submit the requirements confirmation a also online main function in main.cpp, each .cpp must have a .h file, and the main.cpp must include all the .h files.

@@ -4,7 +4,6 @@
 bool Customer::loadFromLine(const std::string &line) {
     // Format: CustomerID%FirstName%LastName%StreetAddress%City%State%ZipCode
     // We'll parse by splitting at '%'.
-    // Simple approach: Use find() and substr().
     size_t start = 0;
     size_t end   = 0;
     int fieldIndex = 0;

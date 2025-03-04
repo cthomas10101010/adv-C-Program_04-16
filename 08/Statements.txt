@@ -1,0 +1,9 @@
+Working on Program 08 gave me valuable experience with file handling in C++. 
+The most challenging aspect was correctly parsing input files using different 
+delimiters and ensuring proper validation of user input. I learned how to 
+effectively use vectors to store and process data from multiple files 
+simultaneously. The implementation of search functions based on different
+ criteria (like CustomerID or ZipCode) helped me understand the importance 
+ of data relationships across multiple files. Managing stream states and 
+ providing informative feedback to users was another essential skill I
+  developed through this project.
