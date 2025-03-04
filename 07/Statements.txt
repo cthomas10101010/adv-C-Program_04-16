@@ -1,0 +1,9 @@
+I began by reading the textbook up to Chapter 13, doing some Googling, and conducting further research
+with AI. Working with Program 07 helped me understand how overloaded stream operators provide a natural interface for C++ classes.
+ I found implementing the extraction operator (>>) particularly challenging because it required careful validation of the phone number format. 
+ The most difficult part was properly handling the stream state and ensuring that invalid inputs were rejected while still allowing the program to continue running.
+  I gained valuable experience with string handling in C++, especially with the character array manipulation needed to extract the area code, exchange,
+   and line number components from the input.
+
+
+
