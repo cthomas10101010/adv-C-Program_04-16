@@ -1,234 +1,155 @@
+/*
+Program: ITSE2331 - Program 12 - Chapter 18 Templates
+Description: This program demonstrates custom class and function templates.
+It implements a custom Stack class template that uses a vector for storage.
+The user can choose to work with a stack of integer, double, or string.
+Stack member functions include push, pop, top, clear, and empty.
+Exception handling is used to catch errors when performing operations on an empty stack.
+*/
+
 #include <iostream>
+#include <vector>
+#include <stdexcept>
 #include <string>
-#include <limits> // Include this header for std::numeric_limits
-#include "Stack.h"
+#include <type_traits> // For std::is_same
 
-int main() {
-    std::cout << "Program 12: Demonstrating Custom Class Templates\n\n";
+using namespace std;
 
-    bool exitProgram = false;
-    while (!exitProgram) {
-        std::cout << "\nSelect the type of stack:\n"
-                  << " 1) Integer Stack\n"
-                  << " 2) Double Stack\n"
-                  << " 3) String Stack\n"
-                  << " 4) Exit\n"
-                  << "Enter your choice: ";
-        int stackChoice;
-        std::cin >> stackChoice;
-
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid input. Please enter a number between 1 and 4.\n";
-            continue;
-        }
-
-        switch (stackChoice) {
-            case 1: {
-                Stack<int> intStack;
-                bool exitIntStack = false;
-                while (!exitIntStack) {
-                    std::cout << "\nInteger Stack Operations:\n"
-                              << " 1) Push\n"
-                              << " 2) Pop\n"
-                              << " 3) Top\n"
-                              << " 4) Clear\n"
-                              << " 5) Check if Empty\n"
-                              << " 6) Back to Stack Type Selection\n"
-                              << "Enter your choice: ";
-                    int opChoice;
-                    std::cin >> opChoice;
-
-                    if (std::cin.fail()) {
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        std::cout << "Invalid input. Please enter a number between 1 and 6.\n";
-                        continue;
-                    }
-
-                    try {
-                        switch (opChoice) {
-                            case 1: {
-                                int value;
-                                std::cout << "Enter integer to push: ";
-                                std::cin >> value;
-                                intStack.push(value);
-                                std::cout << value << " pushed to stack.\n";
-                                break;
-                            }
-                            case 2: {
-                                int value = intStack.pop();
-                                std::cout << value << " popped from stack.\n";
-                                break;
-                            }
-                            case 3: {
-                                int value = intStack.top();
-                                std::cout << "Top element: " << value << "\n";
-                                break;
-                            }
-                            case 4:
-                                intStack.clear();
-                                std::cout << "Stack cleared.\n";
-                                break;
-                            case 5:
-                                std::cout << "Stack is " << (intStack.empty() ? "empty." : "not empty.") << "\n";
-                                break;
-                            case 6:
-                                exitIntStack = true;
-                                break;
-                            default:
-                                std::cout << "Invalid choice. Please select a number between 1 and 6.\n";
-                                break;
-                        }
-                    }
-                    catch (const std::exception& e) {
-                        std::cout << "Exception: " << e.what() << "\n";
-                    }
-                }
-                break;
-            }
-            case 2: {
-                Stack<double> doubleStack;
-                bool exitDoubleStack = false;
-                while (!exitDoubleStack) {
-                    std::cout << "\nDouble Stack Operations:\n"
-                              << " 1) Push\n"
-                              << " 2) Pop\n"
-                              << " 3) Top\n"
-                              << " 4) Clear\n"
-                              << " 5) Check if Empty\n"
-                              << " 6) Back to Stack Type Selection\n"
-                              << "Enter your choice: ";
-                    int opChoice;
-                    std::cin >> opChoice;
-
-                    if (std::cin.fail()) {
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        std::cout << "Invalid input. Please enter a number between 1 and 6.\n";
-                        continue;
-                    }
-
-                    try {
-                        switch (opChoice) {
-                            case 1: {
-                                double value;
-                                std::cout << "Enter double to push: ";
-                                std::cin >> value;
-                                doubleStack.push(value);
-                                std::cout << value << " pushed to stack.\n";
-                                break;
-                            }
-                            case 2: {
-                                double value = doubleStack.pop();
-                                std::cout << value << " popped from stack.\n";
-                                break;
-                            }
-                            case 3: {
-                                double value = doubleStack.top();
-                                std::cout << "Top element: " << value << "\n";
-                                break;
-                            }
-                            case 4:
-                                doubleStack.clear();
-                                std::cout << "Stack cleared.\n";
-                                break;
-                            case 5:
-                                std::cout << "Stack is " << (doubleStack.empty() ? "empty." : "not empty.") << "\n";
-                                break;
-                            case 6:
-                                exitDoubleStack = true;
-                                break;
-                            default:
-                                std::cout << "Invalid choice. Please select a number between 1 and 6.\n";
-                                break;
-                        }
-                    }
-                    catch (const std::exception& e) {
-                        std::cout << "Exception: " << e.what() << "\n";
-                    }
-                }
-                break;
-            }
-            case 3: {
-                Stack<std::string> stringStack;
-                bool exitStringStack = false;
-                while (!exitStringStack) {
-                    std::cout << "\nString Stack Operations:\n"
-                              << " 1) Push\n"
-                              << " 2) Pop\n"
-                              << " 3) Top\n"
-                              << " 4) Clear\n"
-                              << " 5) Check if Empty\n"
-                              << " 6) Back to Stack Type Selection\n"
-                              << "Enter your choice: ";
-                    int opChoice;
-                    std::cin >> opChoice;
-
-                    if (std::cin.fail()) {
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        std::cout << "Invalid input. Please enter a number between 1 and 6.\n";
-                        continue;
-                    }
-
-                    try {
-                        switch (opChoice) {
-                            case 1: {
-                                std::string value;
-                                std::cout << "Enter string to push: ";
-                                std::cin.ignore(); // To consume the leftover newline
-                                std::getline(std::cin, value);
-                                stringStack.push(value);
-                                std::cout << "\"" << value << "\" pushed to stack.\n";
-                                break;
-                            }
-                            case 2: {
-                                std::string value = stringStack.pop();
-                                std::cout << "\"" << value << "\" popped from stack.\n";
-                                break;
-                            }
-                            case 3: {
-                                std::string value = stringStack.top();
-                                std::cout << "Top element: \"" << value << "\"\n";
-                                break;
-                            }
-                            case 4:
-                                stringStack.clear();
-                                std::cout << "Stack cleared.\n";
-                                break;
-                            case 5:
-                                std::cout << "Stack is " << (stringStack.empty() ? "empty." : "not empty.") << "\n";
-                                break;
-                            case 6:
-                                exitStringStack = true;
-                                break;
-                            default:
-                                std::cout << "Invalid choice. Please select a number between 1 and 6.\n";
-                                break;
-                        }
-                    }
-                    catch (const std::exception& e) {
-                        std::cout << "Exception: " << e.what() << "\n";
-                    }
-                }
-                break;
-            }
-            case 4:
-                exitProgram = true;
-                break;
-            default:
-                std::cout << "Invalid choice. Please select a number between 1 and 4.\n";
-                break;
-        }
+// Custom Class Stack Template using a vector for elements.
+template <class T>
+class Stack {
+private:
+    vector<T> elements;  // Data representation: Stack storage using vector.
+public:
+    // Adds an element to the top of the stack.
+    void push(const T &element) {
+        elements.push_back(element);
     }
 
-    // Graceful exit
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cin.clear();
-    std::cout << "\n<ENTER> to exit: ";
-    std::cin.get();
+    // Removes and returns the element from the top of the stack.
+    // Throws an exception if the stack is empty.
+    T pop() {
+        if (elements.empty()) {
+            throw runtime_error("Stack is empty! Cannot pop.");
+        }
+        T topElement = elements.back();
+        elements.pop_back();
+        return topElement;
+    }
 
+    // Returns (but does not remove) the element from the top of the stack.
+    // Throws an exception if the stack is empty.
+    T top() const {
+        if (elements.empty()) {
+            throw runtime_error("Stack is empty! Cannot retrieve top element.");
+        }
+        return elements.back();
+    }
+
+    // Removes all elements from the stack.
+    void clear() {
+        elements.clear();
+    }
+
+    // Returns true if the stack is empty; otherwise, false.
+    bool empty() const {
+        return elements.empty();
+    }
+};
+
+// Displays the available stack operations.
+void displayMenu() {
+    cout << "\nPlease select a stack operation:\n"
+         << "1. Push element\n"
+         << "2. Pop element\n"
+         << "3. Retrieve top element\n"
+         << "4. Clear stack\n"
+         << "5. Check if stack is empty\n"
+         << "6. Exit\n"
+         << "Enter your choice: ";
+}
+
+// Template function that performs stack operations interactively.
+template <typename T>
+void stackOperations() {
+    Stack<T> stack;
+    int choice;
+    T element;
+    bool exit = false;
+
+    while (!exit) {
+        displayMenu();
+        cin >> choice;
+        switch (choice) {
+            case 1: // Push element
+                cout << "Enter element to push: ";
+                if constexpr (is_same<T, string>::value) {
+                    cin.ignore(); // Clear newline character for getline
+                    getline(cin, element);
+                } else {
+                    cin >> element;
+                }
+                stack.push(element);
+                cout << "Element pushed.\n";
+                break;
+            case 2: // Pop element
+                try {
+                    element = stack.pop();
+                    cout << "Popped element: " << element << "\n";
+                } catch (runtime_error &ex) {
+                    cout << "Exception: " << ex.what() << "\n";
+                }
+                break;
+            case 3: // Retrieve top element
+                try {
+                    element = stack.top();
+                    cout << "Top element: " << element << "\n";
+                } catch (runtime_error &ex) {
+                    cout << "Exception: " << ex.what() << "\n";
+                }
+                break;
+            case 4: // Clear stack
+                stack.clear();
+                cout << "Stack cleared.\n";
+                break;
+            case 5: // Check if stack is empty
+                cout << "Stack is " << (stack.empty() ? "empty" : "not empty") << ".\n";
+                break;
+            case 6: // Exit
+                exit = true;
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+}
+
+// Main function: prompts the user to select the type of stack and then enters the operations loop.
+int main() {
+    int typeChoice;
+    cout << "Select the type of stack:\n"
+         << "1. Integer\n"
+         << "2. Double\n"
+         << "3. String\n"
+         << "Enter your choice: ";
+    cin >> typeChoice;
+
+    // Direct the program flow based on the user-selected type.
+    switch (typeChoice) {
+        case 1:
+            cout << "You selected Integer stack.\n";
+            stackOperations<int>();
+            break;
+        case 2:
+            cout << "You selected Double stack.\n";
+            stackOperations<double>();
+            break;
+        case 3:
+            cout << "You selected String stack.\n";
+            stackOperations<string>();
+            break;
+        default:
+            cout << "Invalid choice. Exiting program.\n";
+    }
     return 0;
 }
